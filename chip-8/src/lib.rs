@@ -343,8 +343,6 @@ impl Chip8 {
                 let y_coor = vy % SCREEN_HEIGHT;
 
                 // get sprite data from memory starting at I register
-                let sprite_start = self.i_register as usize;
-                let sprite_end = sprite_start + height;
                 let sprite = self.memory.get_bytes(self.i_register, height);
 
                 // init vf to 0
@@ -376,7 +374,8 @@ impl Chip8 {
                 // wait for a key press, then store the value of the key in Vx
                 let x = digit2 as usize;
                 // TODO: implement key press waiting
-                // self.v_registers[x] = self.wait_for_keypress();
+                // decrement pc to repeat this instruction
+                self.memory.prev();
             }
             (0xF, _, 1, 5) => {
                 // set delay timer = Vx
@@ -391,17 +390,19 @@ impl Chip8 {
             (0xF, _, 1, 0xE) => {
                 // set I = I + Vx
                 let x = digit2 as usize;
-                // TODO: review wrapping behavior
                 self.i_register = self.i_register.wrapping_add(self.v_registers[x] as u16);
             }
             (0xF, _, 2, 9) => {
                 // set I = location of sprite for digit Vx
+                // get digit from Vx
                 let x = digit2 as usize;
-                // TODO:
+                let digit = self.v_registers[x] as u16;
+                // set I to the location of the sprite
+                self.i_register = digit * 5; // each sprite is 5 bytes long
+                
             }
             (0xF, _, 3, 3) => {
                 // store BCD representation of Vx in memory locations I, I+1, and I+2
-                // TODO: review
                 let x = digit2 as usize;
                 let value = self.v_registers[x];
                 self.memory.data[self.i_register as usize] = value / 100;
