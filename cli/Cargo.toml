@@ -1,0 +1,9 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chip-8 = { version = "0.1.0", path = "../chip-8" }
+clap = { version = "4.5.53", features = ["derive"] }
+crossterm = "0.29.0"
