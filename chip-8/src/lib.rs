@@ -182,6 +182,10 @@ impl Chip8 {
         self.execute(opcode);
     }
 
+    pub fn set_pressed_keys(&mut self, keys: [bool; NUM_KEYS]) {
+        self.pressed_keys = keys;
+    }
+
     pub fn execute(&mut self, opcode: u16) {
         // opcode split into 4 digits. Each is 4 bits
         let digit1 = (opcode & 0xF000) >> 12;
@@ -373,9 +377,15 @@ impl Chip8 {
             (0xF, _, 0, 0xA) => {
                 // wait for a key press, then store the value of the key in Vx
                 let x = digit2 as usize;
-                // TODO: implement key press waiting
-                // decrement pc to repeat this instruction
-                self.memory.prev();
+                // find first pressed key
+                let pressed_key_option: Option<usize> = self.pressed_keys.iter().position(|&k| k);
+                if let Some(pressed_key) = pressed_key_option {
+                    // store key in Vx
+                    self.v_registers[x] = pressed_key as u8;
+                } else {
+                    // no key pressed, decrement pc to repeat this instruction
+                    self.memory.prev();
+                }
             }
             (0xF, _, 1, 5) => {
                 // set delay timer = Vx
