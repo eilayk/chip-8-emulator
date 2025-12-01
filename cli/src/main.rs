@@ -3,7 +3,7 @@ use crossterm::{
     cursor,
     event::{self, Event, KeyCode, KeyModifiers},
     execute,
-    style::{self, Stylize},
+    style::{self},
     terminal::{self},
     queue,
 };
@@ -19,6 +19,7 @@ use chip_8::{Chip8, SCREEN_HEIGHT, SCREEN_WIDTH};
 #[command(version, about, long_about = None)]
 struct Cli {
     /// Path to the ROM file to load
+    #[arg(default_value = "../roms/test_opcode.ch8")]
     rom_path: PathBuf,
 
     /// Clock speed in Hz (instructions per second)
@@ -70,7 +71,6 @@ fn run_loop(chip8: &mut Chip8, stdout: &mut Stdout, clock_speed: u64) -> Result<
 
     loop {
         // Handle Input
-        // We poll multiple times or just once? Poll all available events.
         while event::poll(Duration::from_secs(0))? {
             if let Event::Key(key) = event::read()? {
                 if key.code == KeyCode::Esc || (key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL)) {
