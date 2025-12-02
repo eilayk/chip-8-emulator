@@ -1,8 +1,8 @@
-const SCREEN_WIDTH: usize = 64;
-const SCREEN_HEIGHT: usize = 32;
+pub const SCREEN_WIDTH: usize = 64;
+pub const SCREEN_HEIGHT: usize = 32;
+pub const NUM_KEYS: usize = 16;
 const MEMORY_SIZE: usize = 4096;
 const NUM_REGISTERS: usize = 16;
-const NUM_KEYS: usize = 16;
 const START_ADDRESS: u16 = 0x200;
 const STACK_SIZE: usize = 16;
 
@@ -60,6 +60,15 @@ impl Memory {
         self.data[..FONTSET_SIZE].copy_from_slice(&FONTSET);
         // set program counter to start address
         self.pc = START_ADDRESS;
+    }
+
+    fn load_rom(&mut self, data: &[u8]) {
+        let start = START_ADDRESS as usize;
+        let end = start + data.len();
+        if end > MEMORY_SIZE {
+            panic!("ROM too large to fit in memory");
+        }
+        self.data[start..end].copy_from_slice(data);
     }
 
     fn fetch_opcode(&mut self) -> u16 {
@@ -175,6 +184,26 @@ impl Chip8 {
 
     pub fn init(&mut self) {
         self.memory.init();
+    }
+
+    pub fn load_rom(&mut self, data: &[u8]) {
+        self.memory.load_rom(data);
+    }
+
+    pub fn get_display(&self) -> &[bool] {
+        &self.screen.pixels
+    }
+
+    pub fn tick_timers(&mut self) {
+        if self.delay_timer > 0 {
+            self.delay_timer -= 1;
+        }
+        if self.sound_timer > 0 {
+            if self.sound_timer == 1 {
+                // BEEP!
+            }
+            self.sound_timer -= 1;
+        }
     }
 
     pub fn cycle(&mut self) {
@@ -437,5 +466,41 @@ impl Chip8 {
                 // unimplemented opcode
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_initialization() {
+        let mut chip8 = Chip8::new();
+        chip8.init();
+        // Fontset should be loaded
+        assert_eq!(chip8.memory.data[0], 0xF0);
+    }
+
+    #[test]
+    fn test_load_rom() {
+        let mut chip8 = Chip8::new();
+        chip8.init();
+        let rom = [0x00, 0xE0]; // CLS
+        chip8.load_rom(&rom);
+        
+        assert_eq!(chip8.memory.data[START_ADDRESS as usize], 0x00);
+        assert_eq!(chip8.memory.data[START_ADDRESS as usize + 1], 0xE0);
+    }
+    
+    #[test]
+    fn test_cycle() {
+        let mut chip8 = Chip8::new();
+        chip8.init();
+        // 6xNN: Set Vx = NN
+        let rom = [0x60, 0xAA]; 
+        chip8.load_rom(&rom);
+        
+        chip8.cycle();
+        assert_eq!(chip8.v_registers[0], 0xAA);
     }
 }
