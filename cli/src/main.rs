@@ -13,7 +13,7 @@ use std::io::{self, Read, Stdout, Write};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
-use chip_8::{Chip8, SCREEN_HEIGHT, SCREEN_WIDTH};
+use chip_8::{Chip8, NUM_KEYS, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -62,12 +62,19 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn run_loop(chip8: &mut Chip8, stdout: &mut Stdout, clock_speed: u64) -> Result<(), Box<dyn Error>> {
     let mut last_frame_time = Instant::now();
     let mut last_instruction_time = Instant::now();
+    // 1_000_000 microseconds in a second
+    // find microseconds per instruction
     let instruction_duration = Duration::from_micros(1_000_000 / clock_speed);
-    let frame_duration = Duration::from_millis(16); // ~60Hz
+
+    // 60fps
+    // 1000 milliseconds in a second
+    // 1000 / 16 = 62.5
+    let frame_duration = Duration::from_millis(16);
     
     // Key state tracking: index -> last_pressed_time
-    let mut key_last_seen = [None; 16]; 
-    let key_retention = Duration::from_millis(100); // hold key for 100ms after press event
+    let mut key_last_seen = [None; NUM_KEYS]; 
+    // hold key for 100ms after press event
+    let key_retention = Duration::from_millis(100); 
 
     loop {
         // Handle Input
@@ -104,16 +111,13 @@ fn run_loop(chip8: &mut Chip8, stdout: &mut Stdout, clock_speed: u64) -> Result<
             }
         }
 
-        // Update Chip8 Key State based on timestamps
-        let mut keys = [false; 16];
+        // If key was pressed within retention period, mark it as pressed
         let now = Instant::now();
-        for i in 0..16 {
-            if let Some(last_time) = key_last_seen[i] {
-                if now.duration_since(last_time) < key_retention {
-                    keys[i] = true;
-                }
-            }
-        }
+        let keys: [bool; NUM_KEYS] = std::array::from_fn(|i| {
+            key_last_seen[i]
+                .map(|last_time| now.duration_since(last_time) < key_retention)
+                .unwrap_or(false)
+        });
         chip8.set_pressed_keys(keys);
 
         // Execute Instructions
@@ -123,7 +127,7 @@ fn run_loop(chip8: &mut Chip8, stdout: &mut Stdout, clock_speed: u64) -> Result<
              last_instruction_time += instruction_duration;
         }
         
-        // Timer Tick & Draw (60Hz)
+        // Timer tick and draw
         if last_frame_time.elapsed() >= frame_duration {
             chip8.tick_timers();
             draw_screen(chip8, stdout)?;

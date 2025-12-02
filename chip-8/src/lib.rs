@@ -1,8 +1,8 @@
 pub const SCREEN_WIDTH: usize = 64;
 pub const SCREEN_HEIGHT: usize = 32;
+pub const NUM_KEYS: usize = 16;
 const MEMORY_SIZE: usize = 4096;
 const NUM_REGISTERS: usize = 16;
-const NUM_KEYS: usize = 16;
 const START_ADDRESS: u16 = 0x200;
 const STACK_SIZE: usize = 16;
 
