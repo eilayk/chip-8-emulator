@@ -69,6 +69,7 @@ impl Memory {
             panic!("ROM too large to fit in memory");
         }
         self.data[start..end].copy_from_slice(data);
+        self.pc = START_ADDRESS;
     }
 
     fn fetch_opcode(&mut self) -> u16 {
@@ -188,6 +189,13 @@ impl Chip8 {
 
     pub fn load_rom(&mut self, data: &[u8]) {
         self.memory.load_rom(data);
+        self.screen.clear();
+        self.v_registers = [0; NUM_REGISTERS];
+        self.i_register = 0;
+        self.stack = Stack::default();
+        self.pressed_keys = [false; NUM_KEYS];
+        self.delay_timer = 0;
+        self.sound_timer = 0;
     }
 
     pub fn get_display(&self) -> &[bool] {
