@@ -1,0 +1,17 @@
+---
+import Chip8Emulator from '../components/Chip8Emulator';
+import '../styles/global.css';
+---
+
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Chip-8 Emulator</title>
+	</head>
+	<body>
+		<Chip8Emulator client:only="react" />
+	</body>
+</html>
