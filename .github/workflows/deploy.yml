@@ -24,11 +24,11 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Install wasm-pack
-        run: curl https://drager.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Build WASM
         working-directory: web
-        run: wasm-pack build --target bundler
+        run: wasm-pack build
 
       - name: Setup Node
         uses: actions/setup-node@v4
