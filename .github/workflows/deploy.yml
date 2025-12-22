@@ -6,6 +6,7 @@ on:
     paths:
       - 'web/**'
       - 'chip-8/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
