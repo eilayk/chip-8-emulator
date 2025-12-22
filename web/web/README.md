@@ -1,46 +1,43 @@
-# Astro Starter Kit: Basics
+# Chip-8 Emulator Web Interface
 
-```sh
-npm create astro@latest -- --template basics
-```
+This is the web interface for the Chip-8 Emulator, built with Astro, React, and WebAssembly.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Project Structure
 
-## 🚀 Project Structure
+- `src/components/Chip8Emulator.tsx`: The main React component that interfaces with the Wasm module and renders to the Canvas.
+- `public/rom.ch8`: Default ROM loaded on start.
+- `astro.config.mjs`: Astro configuration with React and Wasm integration.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Setup
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+1.  **Build the WebAssembly module:**
+    Ensure you have `wasm-pack` installed.
+    ```bash
+    cd ../
+    wasm-pack build --target web --out-dir pkg
+    ```
+    (Note: This has already been done during setup)
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-## 🧞 Commands
+3.  **Run locally:**
+    ```bash
+    npm run dev
+    ```
 
-All commands are run from the root of the project, from a terminal:
+4.  **Build for production (Cloudflare Pages):**
+    ```bash
+    npm run build
+    ```
+    The output directory is `dist/`.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Controls
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Keypad:
+  - 1 2 3 4
+  - Q W E R
+  - A S D F
+  - Z X C V
