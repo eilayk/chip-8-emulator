@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from 'react';
-import { useChip8 } from '@/hooks/useChip8';
-import { EmulatorCanvas, type EmulatorCanvasHandle } from '@/components/EmulatorCanvas';
-import { RomSelector } from '@/components/RomSelector';
-import { Header } from '@/components/Header';
-import { PRELOADED_ROMS } from '@/config/roms';
+import { useEffect, useRef } from 'react';
+import { EmulatorCanvas, type EmulatorCanvasHandle } from './components/EmulatorCanvas';
+import { useChip8 } from './hooks/useChip8';
+import { PRELOADED_ROMS } from './lib/roms';
+import { Header } from './components/Header';
+import { RomSelector } from './components/RomSelector';
 
-export default function Chip8Emulator() {
+function App() {
   const canvasRef = useRef<EmulatorCanvasHandle>(null);
 
   const onDraw = (display: Uint8Array) => {
@@ -29,7 +29,7 @@ export default function Chip8Emulator() {
   }, [loadRom]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 gap-8 font-sans text-foreground">
+    <div className="dark min-h-screen bg-background flex flex-col items-center justify-center p-8 gap-8 font-sans text-foreground">
       <Header />
       
       <main className="flex flex-col items-center gap-8 w-full max-w-4xl">
@@ -46,3 +46,5 @@ export default function Chip8Emulator() {
     </div>
   );
 }
+
+export default App

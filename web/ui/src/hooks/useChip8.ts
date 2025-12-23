@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useCallback, use } from 'react';
-import { Chip8Wasm } from 'web';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { Chip8Wasm } from 'chip8-wasm';
 
 const KEY_MAP: { [key: string]: number } = {
   '1': 0x1, '2': 0x2, '3': 0x3, '4': 0xC,

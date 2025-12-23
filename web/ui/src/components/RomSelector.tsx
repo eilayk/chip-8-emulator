@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PRELOADED_ROMS } from '@/config/roms';
+import { PRELOADED_ROMS } from '@/lib/roms';
 import {
   Select,
   SelectContent,
