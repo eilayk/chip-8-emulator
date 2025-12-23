@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, useState, useEffect } from 'react';
+import React, { useRef, useImperativeHandle } from 'react';
 
 const SCREEN_WIDTH = 64;
 const SCREEN_HEIGHT = 32;
